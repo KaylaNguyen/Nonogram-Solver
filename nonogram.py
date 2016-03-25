@@ -14,6 +14,7 @@ COLUMNS = [[3], [5], [2, 3], [6], [6], [5], [3]]
 
 ROW_COUNT = len(ROWS)
 COLUMN_COUNT = len(COLUMNS)
+board = [[UNKNOWN for x in range(COLUMN_COUNT)] for x in range(ROW_COUNT)]
 
 
 def get_permutations():
@@ -25,7 +26,8 @@ def check_constraint():
 
 
 def print_board():
-    return None
+    for r in board:
+        print ' '.join(r)
 
 
 def goal_check():
@@ -36,3 +38,4 @@ def main():
     return None
 
 main()
+print_board()
