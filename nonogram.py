@@ -21,8 +21,41 @@ def get_permutations():
     return None
 
 
-def check_constraint():
-    return None
+# check constrains for given row (board[row])
+# return number of constraint violated
+def check_constraint(row):
+    # print board[row]
+    print ROWS[row]
+
+    # current_row = board[row]
+    current_row = [FILL, FILL, UNKNOWN, FILL, FILL, FILL, UNKNOWN]
+    counter = 0
+    violate = 0
+    print current_row
+    for constraint in ROWS[row]:
+        # flag to determine if the constraint is met
+        flag = False
+        for i in range(0, len(current_row)):
+            if current_row[i] is FILL:
+                counter += 1
+                for j in range(i, len(current_row)):
+                    if current_row[j] is not FILL:
+                        print "current_row[i] is not fill at " + str(j)
+                        break
+            if counter == constraint:
+                print "Counter equals constrains"
+                # backtrack and remove that out of consideration
+                for a in range(0, constraint):
+                    current_row[i + a] = BLANK
+                flag = True
+                counter = 0
+                break
+        if flag is False:
+            violate += 1
+    print current_row
+
+    print violate
+    return violate
 
 
 def print_board():
@@ -39,3 +72,4 @@ def main():
 
 main()
 print_board()
+check_constraint(0)
