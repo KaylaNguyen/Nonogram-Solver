@@ -173,17 +173,17 @@ def goal_check(solution):
 
 
 def main():
-    return None
+    print_board()
+    # check constraint of row 2
+    check_constraint_row(2)
+    # check constraint of col 3
+    check_constraint_col(3)
+
+    # check permutations
+    for perm in get_permutations([2, 2], 7):
+        print perm
 
 
-main()
-print_board()
-
-# check constraint of row 2
-check_constraint_row(2)
-# check constraint of col 3
-check_constraint_col(3)
-
-# check permutations 
-for perm in get_permutations([2, 2], 7):
-    print perm
+# run the main method
+if __name__ == '__main__':
+    main()
