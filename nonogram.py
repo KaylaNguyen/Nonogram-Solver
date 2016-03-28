@@ -1,8 +1,7 @@
 # CS 343 Final Project
 # Nonogram Solver using Genetic Algorithm and Constraint Satisfaction
 # Kayla Nguyen & Amna Aftab
-import random 
-import itertools 
+import random
 from itertools import izip_longest
 # Define some character constants
 BLANK = "-"
@@ -16,8 +15,8 @@ COLUMNS = [[3], [5], [2, 3], [6], [6], [5], [3]]
 
 ROW_COUNT = len(ROWS)
 COLUMN_COUNT = len(COLUMNS)
+# initialize board
 board = [[UNKNOWN for x in range(COLUMN_COUNT)] for y in range(ROW_COUNT)]
-
 
 
 # generate random solution for each constraint 
@@ -31,13 +30,13 @@ def get_random_state(row_constraints, col_constraints):
 
     # solution based on row constraints 
     for row in row_constraints:
-        sol = get_permutations(row, row_length) # get all possible permutations given a constraint 
-        row_sol.append(random.choice(sol)) # append a random permutation
+        sol = get_permutations(row, row_length)  # get all possible permutations given a constraint
+        row_sol.append(random.choice(sol))  # append a random permutation
     
     # solution based on column constraints
     for col in col_constraints:
-        sol = get_permutations(col, col_length) # get all possible permutations given a constraint 
-        col_sol.append(random.choice(sol)) # append a random permutation
+        sol = get_permutations(col, col_length)  # get all possible permutations given a constraint
+        col_sol.append(random.choice(sol))  # append a random permutation
 
     return row_sol, col_sol
 
@@ -69,88 +68,44 @@ def get_permutations(constraints, row_length):
 
 
 # check constrains for given row (board[row])
-# return number of constraint violated, order matters
-# if there's more filled square in row than expected, each filled square is one violation
-# if there's more filled square in a sequence than expected, each extra filled square is a violation
 def check_constraint_row(row):
-    print board[row]
-    print ROWS[row]
+    # print board[row]
+    # print ROWS[row]
 
     current_row = board[row]
-    violate = 0
-    # print current_row
-    for constraint in ROWS[row]:
-        # flag to determine if the constraint is met
-        flag = False
-        for i in range(0, len(current_row)):
-            # print current_row
-            # print "looking at index " + str(i)
-            if current_row[i] is FILL:
-                counter = 1
-                for j in range(i + 1, len(current_row)):
-                    counter += 1
-                    # print "checking " + str(j)
-                    if current_row[j] is not FILL:
-                        counter -= 1
-                        # print "current_row[i] is not fill at " + str(j)
-                        # print "counter is " + str(counter)
-                        break
-                if counter == constraint:
-                    # print "Counter equals constrains"
-                    # backtrack and remove that out of consideration
-                    for a in range(0, constraint):
-                        # print "current row to delete is " + str(int(i+a))
-                        current_row[i + a] = BLANK
-                    # print current_row
-                    flag = True
-                    break
-                else:
-                    # print "Counter not equals constrains"
-                    for a in range(0, counter):
-                        # print "current row to delete is " + str(int(i + a))
-                        current_row[i + a] = BLANK
-                    # print current_row
-                    break
-        if flag is False:
-            violate += 1
+    return check_constraint(ROWS, row, current_row)
 
-    # check for any addition fill blank
-    for square in current_row:
-        if square is FILL:
-            # print 'square is filled'
-            violate += 1
 
-    print violate
-    return violate
-
-# TODO: make this not repetitive
 # check constrains for given column
-# return number of constraint violated, order matters
-# if there's more filled square in row than expected, each filled square is one violation
-# if there's more filled square in a sequence than expected, each extra filled square is a violation
 def check_constraint_col(column):
-    print COLUMNS[column]
+    # print COLUMNS[column]
 
     current_col = []
     for x in range(0, ROW_COUNT):
         current_col.append(board[x][column])
 
-    print current_col
+    # print current_col
 
+    return check_constraint(COLUMNS, column, current_col)
+
+
+# return number of constraint violated, order matters
+# if there's more filled square in row than expected, each filled square is one violation
+# if there's more filled square in a sequence than expected, each extra filled square is a violation
+def check_constraint(constraints_list, index, current):
     violate = 0
-    # print current_row
-    for constraint in COLUMNS[column]:
+    for constraint in constraints_list[index]:
         # flag to determine if the constraint is met
         flag = False
-        for i in range(0, len(current_col)):
+        for i in range(0, len(current)):
             # print current_row
             # print "looking at index " + str(i)
-            if current_col[i] is FILL:
+            if current[i] is FILL:
                 counter = 1
-                for j in range(i + 1, len(current_col)):
+                for j in range(i + 1, len(current)):
                     counter += 1
                     # print "checking " + str(j)
-                    if current_col[j] is not FILL:
+                    if current[j] is not FILL:
                         counter -= 1
                         # print "current_row[i] is not fill at " + str(j)
                         # print "counter is " + str(counter)
@@ -160,7 +115,7 @@ def check_constraint_col(column):
                     # backtrack and remove that out of consideration
                     for a in range(0, constraint):
                         # print "current row to delete is " + str(int(i+a))
-                        current_col[i + a] = BLANK
+                        current[i + a] = BLANK
                     # print current_row
                     flag = True
                     break
@@ -168,19 +123,19 @@ def check_constraint_col(column):
                     # print "Counter not equals constrains"
                     for a in range(0, counter):
                         # print "current row to delete is " + str(int(i + a))
-                        current_col[i + a] = BLANK
+                        current[i + a] = BLANK
                     # print current_row
                     break
         if flag is False:
             violate += 1
 
     # check for any addition fill blank
-    for square in current_col:
+    for square in current:
         if square is FILL:
             # print 'square is filled'
             violate += 1
 
-    print violate
+    # print violate
     return violate
 
 
@@ -198,14 +153,15 @@ def goal_check(solution):
 
 
 # list of rows/cols
-def print_state(board):
-    for row in board: 
+def print_state(state):
+    for row in state:
         print row 
 
+
 # orients each array vertically (like columns in the board)
-def row_to_col(board):
+def row_to_col(game_board):
     col = [] 
-    for x in izip_longest(*board, fillvalue=' '):
+    for x in izip_longest(*game_board, fillvalue=' '):
         col.append(''.join(x))
     return col
 
@@ -223,8 +179,8 @@ def main():
 
     # check random state 
     state = get_random_state(ROWS, COLUMNS)
-    print_state(state[0]) # print solution generated based on row constraints only
-    print_state(row_to_col(state[1])) # print solution generated based on column constraints only 
+    print_state(state[0])  # print solution generated based on row constraints only
+    print_state(row_to_col(state[1]))  # print solution generated based on column constraints only
 
 
 # run the main method
