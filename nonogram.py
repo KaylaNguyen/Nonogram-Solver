@@ -14,33 +14,33 @@ COLUMNS = [[3], [5], [2, 3], [6], [6], [5], [3]]
 
 ROW_COUNT = len(ROWS)
 COLUMN_COUNT = len(COLUMNS)
-board = [[UNKNOWN for x in range(COLUMN_COUNT)] for x in range(ROW_COUNT)]
+board = [[UNKNOWN for x in range(COLUMN_COUNT)] for y in range(ROW_COUNT)]
 
 
 # gets all possible permutations in a row given the constraints
 # returns a list of all possible permutations 
 def get_permutations(constraints, row_length):
-	# create a block = size of the first constraint 
-	blocks = FILL*constraints[0]
-	# base case: if 1 constraint 
-	if len(constraints) == 1: 
-		perms = [] 
-		# place the block in every available location in row/col 
-		# move the block left -> right with each iteration 
-		for i in range(row_length - constraints[0] + 1):
-			prev = BLANK*i # spaces before block 
-			after = BLANK*(row_length - i - constraints[0]) # spaces after block
-			perms.append(prev + blocks + after)
-		return perms 
-	perms = [] 
-	# iterate over all available empty spaces after the first block is placed
-	for i in range(constraints[0], row_length):
-		# recurse over remaining set of constraints 
-		for p in get_permutations(constraints[1:], row_length - i - 1):
-			prev = BLANK*(i - constraints[0])
-			# add a blank space after placing a block 
-			perms.append(prev + blocks + BLANK + p)
-	return perms
+    # create a block = size of the first constraint
+    blocks = FILL * constraints[0]
+    # base case: if 1 constraint
+    if len(constraints) == 1:
+        perms = []
+        # place the block in every available location in row/col
+        # move the block left -> right with each iteration
+        for i in range(row_length - constraints[0] + 1):
+            prev = BLANK * i  # spaces before block
+            after = BLANK * (row_length - i - constraints[0])  # spaces after block
+            perms.append(prev + blocks + after)
+        return perms
+    perms = []
+    # iterate over all available empty spaces after the first block is placed
+    for i in range(constraints[0], row_length):
+        # recurse over remaining set of constraints
+        for p in get_permutations(constraints[1:], row_length - i - 1):
+            prev = BLANK * (i - constraints[0])
+            # add a blank space after placing a block
+            perms.append(prev + blocks + BLANK + p)
+    return perms
 
 
 # check constrains for given row (board[row])
@@ -62,7 +62,7 @@ def check_constraint(row):
             # print "looking at index " + str(i)
             if current_row[i] is FILL:
                 counter = 1
-                for j in range(i+1, len(current_row)):
+                for j in range(i + 1, len(current_row)):
                     counter += 1
                     # print "checking " + str(j)
                     if current_row[j] is not FILL:
@@ -111,9 +111,10 @@ def goal_check():
 def main():
     return None
 
+
 main()
 print_board()
 check_constraint(2)
 # check permutations 
 for perm in get_permutations([2, 2], 7):
-	print perm
+    print perm
