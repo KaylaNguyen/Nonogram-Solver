@@ -68,22 +68,24 @@ def get_permutations(constraints, row_length):
 
 
 # check constrains for given row (board[row])
-def check_constraint_row(row):
+def check_constraint_row(state, row):
     # print board[row]
     # print ROWS[row]
 
-    current_row = board[row]
+    current_row = state[row]
+    print current_row
     return check_constraint(ROWS, row, current_row)
 
 
 # check constrains for given column
-def check_constraint_col(column):
+def check_constraint_col(state, column):
     # print COLUMNS[column]
 
     current_col = []
     for x in range(0, ROW_COUNT):
-        current_col.append(board[x][column])
-
+        current_col.append(state[x][column])
+    #
+    # print "current col"
     # print current_col
 
     return check_constraint(COLUMNS, column, current_col)
@@ -169,18 +171,30 @@ def row_to_col(game_board):
 def main():
     print_board()
     # check constraint of row 2
-    check_constraint_row(2)
+    # check_constraint_row(board, 2)
     # check constraint of col 3
-    check_constraint_col(3)
+    # check_constraint_col(board, 3)
 
     # check permutations
     for perm in get_permutations([2, 2], 7):
         print perm
 
-    # check random state 
+    # check random state
+    print "RANDOM STATE"
     state = get_random_state(ROWS, COLUMNS)
     print_state(state[0])  # print solution generated based on row constraints only
-    print_state(row_to_col(state[1]))  # print solution generated based on column constraints only
+    counter = 0
+    # check constraints each column
+    for col in range(0, COLUMN_COUNT):
+        counter += check_constraint_col(state[0], col)
+
+    print "Number of constrains violated"
+    print counter
+
+    # TODO row_to_col doesn't return a 2D array?
+    # print_state(row_to_col(state[1]))  # print solution generated based on column constraints only
+    # for row in range(0, COLUMN_COUNT):
+    #     print check_constraint_row(row_to_col(state[1]), row)
 
 
 # run the main method
