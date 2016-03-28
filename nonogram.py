@@ -98,8 +98,8 @@ def check_constraint_row(row):
     print violate
     return violate
 
-
-# check constrains for given row (board[row])
+# TODO: make this not repetitive
+# check constrains for given column
 # return number of constraint violated, order matters
 # if there's more filled square in row than expected, each filled square is one violation
 # if there's more filled square in a sequence than expected, each extra filled square is a violation
@@ -164,8 +164,12 @@ def print_board():
         print ' '.join(r)
 
 
-def goal_check():
-    return None
+# Return true if there's no constraint violation in the solution
+def goal_check(solution):
+    for row in solution:
+        if check_constraint_row(row) is not 0:
+            return False
+    return True
 
 
 def main():
