@@ -73,7 +73,6 @@ def check_constraint_row(state, row):
     # print ROWS[row]
 
     current_row = state[row]
-    print current_row
     return check_constraint(ROWS, row, current_row)
 
 
@@ -167,6 +166,12 @@ def row_to_col(game_board):
         col.append(''.join(x))
     return col
 
+def string_to_list(board):
+    game = [] 
+    for b in board:
+        game.append(b.split())
+    return game 
+
 
 def main():
     print_board()
@@ -182,19 +187,26 @@ def main():
     # check random state
     print "RANDOM STATE"
     state = get_random_state(ROWS, COLUMNS)
-    print_state(state[0])  # print solution generated based on row constraints only
+   # row_sol = string_to_list(state[0])
+    col_sol = string_to_list(row_to_col(state[1]))
+    #print_state(state[0])  # print solution generated based on row constraints only
+    #print_state(state[1])
     counter = 0
     # check constraints each column
     for col in range(0, COLUMN_COUNT):
         counter += check_constraint_col(state[0], col)
 
-    print "Number of constrains violated"
-    print counter
+    print "Number of col constraints violated: ", counter
 
+    counter = 0
     # TODO row_to_col doesn't return a 2D array?
     # print_state(row_to_col(state[1]))  # print solution generated based on column constraints only
-    # for row in range(0, COLUMN_COUNT):
-    #     print check_constraint_row(row_to_col(state[1]), row)
+    # NOTE: I'm not sure why check_constraint_row handles input differently from 
+    # check constraint column. But they seem to require entirely different inputs to do the same job. ??? 
+    for row in range(0, ROW_COUNT):
+        counter+= check_constraint_row(col_sol, row)
+
+    print "Number of row constraints violated: ", counter
 
 
 # run the main method
