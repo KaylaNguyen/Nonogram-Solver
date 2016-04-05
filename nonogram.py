@@ -1,6 +1,8 @@
-# CS 343 Final Project
+"""
+CS 343 Final Project
 # Nonogram Solver using Genetic Algorithm and Constraint Satisfaction
 # Kayla Nguyen & Amna Aftab
+"""
 import random
 from itertools import izip_longest
 # Define some character constants
