@@ -9,6 +9,7 @@ from itertools import izip_longest
 
 class Nonogram(object):
     # Define some character constants
+    global BLANK, FILL, UNKNOWN, ROWS, COLUMNS, COLUMN_COUNT, ROW_COUNT, board
     BLANK = "-"
     FILL = "#"
     UNKNOWN = "?"
@@ -48,15 +49,15 @@ class Nonogram(object):
     # returns a list of all possible permutations
     def get_permutations(self, constraints, row_length):
         # create a block = size of the first constraint
-        blocks = self.FILL * constraints[0]
+        blocks = FILL * constraints[0]
         # base case: if 1 constraint
         if len(constraints) == 1:
             perms = []
             # place the block in every available location in row/col
             # move the block left -> right with each iteration
             for i in range(row_length - constraints[0] + 1):
-                prev = self.BLANK * i  # spaces before block
-                after = self.BLANK * (row_length - i - constraints[0])  # spaces after block
+                prev = BLANK * i  # spaces before block
+                after = BLANK * (row_length - i - constraints[0])  # spaces after block
                 perms.append(prev + blocks + after)
             return perms
         perms = []
@@ -64,9 +65,9 @@ class Nonogram(object):
         for i in range(constraints[0], row_length):
             # recurse over remaining set of constraints
             for p in self.get_permutations(constraints[1:], row_length - i - 1):
-                prev = self.BLANK * (i - constraints[0])
+                prev = BLANK * (i - constraints[0])
                 # add a blank space after placing a block
-                perms.append(prev + blocks + self.BLANK + p)
+                perms.append(prev + blocks + BLANK + p)
         return perms
 
     # check constrains for given row (board[row])
@@ -75,20 +76,20 @@ class Nonogram(object):
         # print ROWS[row]
 
         current_row = state[row]
-        return self.check_constraint(self.ROWS, row, current_row)
+        return self.check_constraint(ROWS, row, current_row)
 
     # check constrains for given column
     def check_constraint_col(self, state, column):
         # print COLUMNS[column]
 
         current_col = []
-        for x in range(0, self.ROW_COUNT):
+        for x in range(0, ROW_COUNT):
             current_col.append(state[x][column])
         #
         # print "current col"
         # print current_col
 
-        return self.check_constraint(self.COLUMNS, column, current_col)
+        return self.check_constraint(COLUMNS, column, current_col)
 
     # return number of constraint violated, order matters
     # if there's more filled square in row than expected, each filled square is one violation
@@ -101,12 +102,12 @@ class Nonogram(object):
             for i in range(0, len(current)):
                 # print current_row
                 # print "looking at index " + str(i)
-                if current[i] is self.FILL:
+                if current[i] is FILL:
                     counter = 1
                     for j in range(i + 1, len(current)):
                         counter += 1
                         # print "checking " + str(j)
-                        if current[j] is not self.FILL:
+                        if current[j] is not FILL:
                             counter -= 1
                             # print "current_row[i] is not fill at " + str(j)
                             # print "counter is " + str(counter)
@@ -116,7 +117,7 @@ class Nonogram(object):
                         # backtrack and remove that out of consideration
                         for a in range(0, constraint):
                             # print "current row to delete is " + str(int(i+a))
-                            current[i + a] = self.BLANK
+                            current[i + a] = BLANK
                         # print current_row
                         flag = True
                         break
@@ -124,7 +125,7 @@ class Nonogram(object):
                         # print "Counter not equals constrains"
                         for a in range(0, counter):
                             # print "current row to delete is " + str(int(i + a))
-                            current[i + a] = self.BLANK
+                            current[i + a] = BLANK
                         # print current_row
                         break
             if flag is False:
@@ -132,7 +133,7 @@ class Nonogram(object):
 
         # check for any addition fill blank
         for square in current:
-            if square is self.FILL:
+            if square is FILL:
                 # print 'square is filled'
                 violate += 1
 
@@ -140,7 +141,7 @@ class Nonogram(object):
         return violate
 
     def print_board(self):
-        for r in self.board:
+        for r in board:
             print ' '.join(r)
 
     # Return true if there's no constraint violation in the solution
@@ -181,13 +182,13 @@ class Nonogram(object):
 
         # check random state
         print "RANDOM STATE"
-        state = self.get_random_state(self.ROWS, self.COLUMNS)
+        state = self.get_random_state(ROWS, COLUMNS)
 
         col_sol = self.string_to_list(self.row_to_col(state[1]))
         self.print_state(state[0])  # print solution generated based on row constraints only
         counter = 0
         # check constraints each column
-        for col in range(0, self.COLUMN_COUNT):
+        for col in range(0, COLUMN_COUNT):
             counter += self.check_constraint_col(state[0], col)
 
         print "Number of col constraints violated: ", counter
@@ -196,7 +197,7 @@ class Nonogram(object):
         self.print_state(self.row_to_col(state[1]))  # print solution generated based on column constraints only
         # NOTE: I'm not sure why check_constraint_row handles input differently from
         # check constraint column. But they seem to require entirely different inputs to do the same job. ???
-        for row in range(0, self.ROW_COUNT):
+        for row in range(0, ROW_COUNT):
             counter += self.check_constraint_row(col_sol, row)
 
         print "Number of row constraints violated: ", counter
