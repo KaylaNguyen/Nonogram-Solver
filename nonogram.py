@@ -174,7 +174,7 @@ class Nonogram(object):
             game.append(b.split())
         return game
 
-    def __init__(self):
+    def test(self):
         self.print_board()
         # check constraint of row 2
         # check_constraint_row(board, 2)
@@ -207,5 +207,5 @@ class Nonogram(object):
 
         print "Number of row constraints violated: ", counter
 
-
 stuff = Nonogram()
+# stuff.test()
