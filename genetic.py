@@ -31,12 +31,16 @@ class GeneticAlgorithm(object):
     # selection, crossover, mutation, accepting
     def create_new_population(self, pairs):
         pop = []
+        # create a new population by repeating
+        # selection, crossover, mutation, accepting (placing new offspring in new pop)
         while len(pop) <= 20:
             parents = self.selection(pairs)
-            offspring = self.crossover(parents)
-            new_offspring = self.mutation(offspring)
+            cross = self.crossover(parents)
+            offspring = self.mutation(offspring)
             # place new offspring in a new population
-            pop.append(new_offspring)
+            pop.append(offspring)
+        # return new generated population
+        return pop
 
     # select 2 solutions from a population according to their fitness
     # the better fitness, the bigger chance to be selected
@@ -49,7 +53,7 @@ class GeneticAlgorithm(object):
         for key, value in pairs:
             if len(chosen) <= 2:
                 if value == sol1 or value == sol2:
-                    chosen.add(key)
+                    chosen.append(key)
         return chosen
 
     # with a crossover probability cross over the parents to form a new offspring
@@ -76,24 +80,29 @@ class GeneticAlgorithm(object):
                 new.append(offspring[i])
         return new
 
-    # use new generated population instead of old one
-    def replace(self):
-        pass
-
-    # if the end condition is satisfied, stop
-    # and return the best solution in current population
-    def test(self):
-        pass
+    # return solution if all constraints are met
+    def check_goal(self, pop):
+        for sol in pop:
+            if nonogram.goal_check(sol) is True:
+                return sol
+            else:
+                return None
 
     # main method
     def __init__(self):
         global population, fitness
         population = self.generate_population()
-        fitness = self.evaluate_fitness(population)
-        # pair each solution with its fitness
-        pairs = dict(zip(population, fitness))
-        # create new population
-        self.create_new_population(pairs)
+        # loop to return the best solution in current population
+        flag = None
+        while flag is None:
+            fitness = self.evaluate_fitness(population)
+            # pair each solution with its fitness
+            pairs = dict(zip(population, fitness))
+            # create new population
+            population = self.create_new_population(pairs)
+            # check if the end condition is satisfied
+            flag = self.check_goal(population)
 
-        # create a new population by repeating
-        # selection, crossover, mutation, accepting
+        print nonogram.print_state(flag)
+
+GeneticAlgorithm()
