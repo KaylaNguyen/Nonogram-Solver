@@ -73,7 +73,8 @@ class Nonogram(object):
     # TODO: Thank you Amna!
     # return a random row that meets the constraints
     def get_random_row(self, row_num):
-        pass
+        return random.choice(self.get_permutations(ROWS[row_num], ROW_COUNT))
+        
 
     # check constrains for given row (board[row])
     def check_constraint_row(self, state, row):
@@ -206,6 +207,7 @@ class Nonogram(object):
             counter += self.check_constraint_row(col_sol, row)
 
         print "Number of row constraints violated: ", counter
+        print "RANDOM ROW: ", self.get_random_row(0)
 
 stuff = Nonogram()
-# stuff.test()
+#stuff.test()
