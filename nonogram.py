@@ -70,6 +70,11 @@ class Nonogram(object):
                 perms.append(prev + blocks + BLANK + p)
         return perms
 
+    # TODO: Thank you Amna!
+    # return a random row that meets the constraints
+    def get_random_row(self, row_num):
+        pass
+
     # check constrains for given row (board[row])
     def check_constraint_row(self, state, row):
         # print board[row]

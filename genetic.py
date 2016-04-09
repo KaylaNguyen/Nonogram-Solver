@@ -66,8 +66,15 @@ class GeneticAlgorithm(object):
 
     # with a mutation probability mutate new offspring at each locus (position in chromosome)
     def mutation(self, offspring):
-        probability = random.randint(0, 100)
-        return offspring
+        # new mutated offspring
+        new = []
+        for i in range(0, nonogram.ROW_COUNT):
+            probability = random.randint(0, 100)
+            if probability <= 10:
+                new.append(nonogram.get_random_row(i))
+            else:
+                new.append(offspring[i])
+        return new
 
     # use new generated population instead of old one
     def replace(self):
