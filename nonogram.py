@@ -15,9 +15,9 @@ class Nonogram(object):
     UNKNOWN = "?"
 
     # Constraints for rows and columns
-    ROWS = [[2, 2], [7], [2, 4], [7], [5], [3], [1]]
+    ROWS = [[2, 2], [4, 4], [9], [9], [7], [5], [3], [1], [1]]
 
-    COLUMNS = [[3], [5], [2, 3], [6], [6], [5], [3]]
+    COLUMNS = [[3], [5], [6], [6], [7], [6], [6], [5], [3]]
 
     ROW_COUNT = len(ROWS)
     COLUMN_COUNT = len(COLUMNS)
@@ -152,8 +152,8 @@ class Nonogram(object):
 
     # Return true if there's no constraint violation in the solution
     def goal_check(self, solution):
-        for row in solution:
-            if self.check_constraint_row(row) is not 0:
+        for row in range(len(solution)):
+            if self.check_constraint_row(solution, row) is not 0:
                 return False
         return True
 
@@ -174,6 +174,12 @@ class Nonogram(object):
         for b in board:
             game.append(b.split())
         return game
+
+    def get_rows(self):
+        return ROWS
+
+    def get_cols(self):
+        return COLUMNS
 
     def test(self):
         self.print_board()
