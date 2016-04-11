@@ -70,11 +70,9 @@ class Nonogram(object):
                 perms.append(prev + blocks + BLANK + p)
         return perms
 
-    # TODO: Thank you Amna!
     # return a random row that meets the constraints
     def get_random_row(self, row_num):
         return random.choice(self.get_permutations(ROWS[row_num], ROW_COUNT))
-        
 
     # check constrains for given row (board[row])
     def check_constraint_row(self, state, row):
@@ -152,8 +150,11 @@ class Nonogram(object):
 
     # Return true if there's no constraint violation in the solution
     def goal_check(self, solution):
-        for row in solution:
-            if self.check_constraint_row(row) is not 0:
+        for i in range(0, ROW_COUNT):
+            if self.check_constraint_row(solution, i) is not 0:
+                return False
+        for j in range(0, COLUMN_COUNT):
+            if self.check_constraint_col(solution, j) is not 0:
                 return False
         return True
 
@@ -174,6 +175,13 @@ class Nonogram(object):
         for b in board:
             game.append(b.split())
         return game
+
+    # getter methods
+    def get_row_constraints(self):
+        return ROWS
+
+    def get_column_constraints(self):
+        return COLUMNS
 
     def test(self):
         self.print_board()

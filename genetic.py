@@ -8,23 +8,28 @@ import random
 
 class GeneticAlgorithm(object):
     # instance of nonogram board
-    global nonogram, population
+    global nonogram, population, fitness, ROWS, COLUMNS, ROW_COUNT, COLUMN_COUNT
     nonogram = Nonogram()
     population = []
     fitness = []
+
+    ROWS = nonogram.get_row_constraints()
+    COLUMNS = nonogram.get_column_constraints()
+    ROW_COUNT = len(ROWS)
+    COLUMN_COUNT = len(COLUMNS)
 
     # generate random population of suitable solutions for nonogram
     def generate_population(self):
         pop = []
         for i in range(0, 20):
-            pop.append(nonogram.get_random_state(nonogram.ROWS, nonogram.COLUMNS))
+            pop.append(nonogram.get_random_state(ROWS, COLUMNS))
         return pop
 
     # evaluate the fintness of each solution in the population
     def evaluate_fitness(self, pop):
         fit = []
         for sol in pop:
-            fit.append(nonogram.check_constraint_col(sol))
+            fit.append(nonogram.goal_check(sol))
         return fit
 
     # create a new population by repeating
@@ -36,7 +41,7 @@ class GeneticAlgorithm(object):
         while len(pop) <= 20:
             parents = self.selection(pairs)
             cross = self.crossover(parents)
-            offspring = self.mutation(offspring)
+            offspring = self.mutation(cross)
             # place new offspring in a new population
             pop.append(offspring)
         # return new generated population
@@ -92,12 +97,15 @@ class GeneticAlgorithm(object):
     def __init__(self):
         global population, fitness
         population = self.generate_population()
+
         # loop to return the best solution in current population
         flag = None
         while flag is None:
             fitness = self.evaluate_fitness(population)
             # pair each solution with its fitness
-            pairs = dict(zip(population, fitness))
+            # TODO use dictionary
+            pairs = {population[i]: fitness[i] for i in range(0, len(population))}
+            # pairs = dict(zip(population, fitness))
             # create new population
             population = self.create_new_population(pairs)
             # check if the end condition is satisfied
