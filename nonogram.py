@@ -15,9 +15,9 @@ class Nonogram(object):
     UNKNOWN = "?"
 
     # Constraints for rows and columns
-    ROWS = [[2, 2], [7], [2, 4], [7], [5], [3], [1]]
+    ROWS = [[2, 2], [4, 4], [9], [9], [7], [5], [3], [1], [1]]
 
-    COLUMNS = [[3], [5], [2, 3], [6], [6], [5], [3]]
+    COLUMNS = [[3], [5], [6], [6], [7], [6], [6], [5], [3]]
 
     ROW_COUNT = len(ROWS)
     COLUMN_COUNT = len(COLUMNS)
