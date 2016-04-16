@@ -95,7 +95,7 @@ class GeneticAlgorithm(object):
         for i in range(0, ROW_COUNT):
             # 10% chance a row get mutated
             probability = random.randint(0, 100)
-            if probability <= 10:
+            if probability <= 20:
                 # print "row" + str(i) + " get mutated"
                 # print offspring[i]
                 rand = nonogram.get_random_row(i)
@@ -110,7 +110,7 @@ class GeneticAlgorithm(object):
     # return solution if all constraints are met
     def check_goal(self, pop):
         for sol in pop:
-            if nonogram.check_all_col(sol) is True:
+            if nonogram.check_all_col(sol) is 0:
                 return sol
         return None
 
@@ -124,14 +124,6 @@ class GeneticAlgorithm(object):
         # nonogram.print_state(pairs[0].get_state())
         # print pairs[0].get_fit()
         return pairs
-
-    # # method to check if a population has an optimal solution
-    # def check_pop(self, pop):
-    #     for sol in pop:
-    #         nonogram.print_state(sol)
-    #         if nonogram.goal_check(sol):
-    #             return sol
-    #     return None
 
     # main method
     def __init__(self):
