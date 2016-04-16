@@ -1,5 +1,6 @@
 """
 Genetic algorithm to solve nonogram
+Followed outline from www.obitko.com/tutorials/genetic-algorithms/ga-basic-description.php
 By Kayla Nguyen
 """
 from nonogram import Nonogram
@@ -58,12 +59,6 @@ class GeneticAlgorithm(object):
         sol1 = sorted_pairs[0]
         sol2 = sorted_pairs[1]
 
-        '''print "chosen sol are"
-        nonogram.print_state(sol1.get_state())
-        print sol1.get_fit()
-        nonogram.print_state(sol2.get_state())
-        print sol2.get_fit()'''
-
         # list of 2 chosen solutions
         chosen = [sol1.get_state(), sol2.get_state()]
         return chosen
@@ -73,19 +68,12 @@ class GeneticAlgorithm(object):
         # generate a random crossover point
         crossover_point = random.randint(0, ROW_COUNT)
 
-        # TODO
-        # print ROW_COUNT
-        # print crossover_point
-        # nonogram.print_state(parents[0])
-
         # copy everything before this point from parent 1 and after this point from parent 2
         offspring = []
         for i in range(0, crossover_point):
             offspring.append(parents[0][i])
         for j in range(crossover_point, ROW_COUNT):
             offspring.append(parents[1][j])
-        #TODO
-        # nonogram.print_state(offspring)
         return offspring
 
     # with a mutation probability mutate new offspring at each locus (position in chromosome)
@@ -120,9 +108,6 @@ class GeneticAlgorithm(object):
         for i in range(0, len(pop)):
             solution = Solution(pop[i], fitness[i])
             pairs.append(solution)
-        # TODO: Delete PRINT
-        # nonogram.print_state(pairs[0].get_state())
-        # print pairs[0].get_fit()
         return pairs
 
     # main method
@@ -136,15 +121,14 @@ class GeneticAlgorithm(object):
         while flag is None:
             # STEP 2: evaluate fitness of each sol in population
             fitness = self.evaluate_fitness(population)
-            # TODO: Print
-            # print "fitness is"
-            # print fitness
+
             # pair each solution with its fitness
             pairs = self.pair_up(population, fitness)
 
-            # STEP 3: Create a new population
+            # STEP 3: create a new population
             population = self.create_new_population(pairs)
-            # check if the end condition is satisfied
+
+            # STEP 4: check if the end condition is satisfied
             flag = self.check_goal(population)
 
         print nonogram.print_state(flag)

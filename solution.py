@@ -6,10 +6,7 @@ By Kayla Nguyen
 
 
 class Solution(object):
-    #global state, fitness
-
     def __init__(self, given_state, given_fitness):
-        #global state, fitness
         self.state = given_state
         self.fitness = given_fitness
 

@@ -95,8 +95,6 @@ class Nonogram(object):
             # flag to determine if the constraint is met
             flag = False
             for i in range(0, len(current)):
-                # print current_row
-                # print "looking at index " + str(i)
                 if current[i] is FILL:
                     counter = 1
                     for j in range(i + 1, len(current)):
@@ -104,14 +102,11 @@ class Nonogram(object):
                         # print "checking " + str(j)
                         if current[j] is not FILL:
                             counter -= 1
-                            # print "current_row[i] is not fill at " + str(j)
-                            # print "counter is " + str(counter)
                             break
                     if counter == constraint:
                         # print "Counter equals constrains"
                         # backtrack and remove that out of consideration
                         for a in range(0, constraint):
-                            # print "current row to delete is " + str(int(i+a))
                             current[i + a] = BLANK
                         # print current_row
                         flag = True
@@ -183,10 +178,6 @@ class Nonogram(object):
 
     def test(self):
         self.print_board()
-        # check constraint of row 2
-        # check_constraint_row(board, 2)
-        # check constraint of col 3
-        # check_constraint_col(board, 3)
 
         # check permutations
         for perm in self.get_permutations([2, 2], 7):
@@ -198,7 +189,6 @@ class Nonogram(object):
 
         col_sol = self.string_to_list(self.row_to_col(state[1]))
         self.print_state(state[0])  # print solution generated based on row constraints only
-        counter = 0
         # check constraints each column
         counter = self.check_all_col(state[0])
 
@@ -206,8 +196,6 @@ class Nonogram(object):
 
         counter = 0
         self.print_state(self.row_to_col(state[1]))  # print solution generated based on column constraints only
-        # NOTE: I'm not sure why check_constraint_row handles input differently from
-        # check constraint column. But they seem to require entirely different inputs to do the same job. ???
         for row in range(0, ROW_COUNT):
             counter += self.check_constraint_row(col_sol, row)
 
