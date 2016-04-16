@@ -76,23 +76,14 @@ class Nonogram(object):
 
     # check constrains for given row (board[row])
     def check_constraint_row(self, state, row):
-        # print board[row]
-        # print ROWS[row]
-
         current_row = state[row]
         return self.check_constraint(ROWS, row, current_row)
 
     # check constrains for given column
     def check_constraint_col(self, state, column):
-        # print COLUMNS[column]
-
         current_col = []
         for x in range(0, ROW_COUNT):
             current_col.append(state[x][column])
-        #
-        # print "current col"
-        # print current_col
-
         return self.check_constraint(COLUMNS, column, current_col)
 
     # return number of constraint violated, order matters
@@ -158,6 +149,13 @@ class Nonogram(object):
                 return False
         return True
 
+    # Return true if there's no constraint violation in the solution
+    def check_all_col(self, solution):
+        num = 0
+        for j in range(0, COLUMN_COUNT):
+            num += self.check_constraint_col(solution, j)
+        return num
+
     # list of rows/cols
     def print_state(self, state):
         for row in state:
@@ -202,8 +200,7 @@ class Nonogram(object):
         self.print_state(state[0])  # print solution generated based on row constraints only
         counter = 0
         # check constraints each column
-        for col in range(0, COLUMN_COUNT):
-            counter += self.check_constraint_col(state[0], col)
+        counter = self.check_all_col(state[0])
 
         print "Number of col constraints violated: ", counter
 
@@ -218,4 +215,4 @@ class Nonogram(object):
         print "RANDOM ROW: ", self.get_random_row(0)
 
 stuff = Nonogram()
-#stuff.test()
+# stuff.test()
