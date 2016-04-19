@@ -4,13 +4,12 @@ from node import Node
 import copy
 
 
-class Backtracking_Search(object):
-    """docstring for Backtracking_Search"""
+class Backtracking_Search():
 
     def __init__(self):
         self.nonogram = Nonogram()
-        self.rows = self.nonogram.get_rows()
-        self.col = self.nonogram.get_cols()
+        self.rows = self.nonogram.get_row_constraints()
+        self.col = self.nonogram.get_column_constraints()
         self.row_length = len(self.rows)
         self.col_length = len(self.col)
         self.state = State(self.rows, self.col)
@@ -22,12 +21,12 @@ class Backtracking_Search(object):
 
     def recursive_backtracking(self, node):
         # check for goal state
-        if self.nonogram.goal_check(copy.deepcopy(node.state.get_board())):
+        if self.is_goal(copy.deepcopy(node.state.get_board())):
             return node
         # get all possible permutations for the row we're currently trying to fill
         rows = self.nonogram.get_permutations(self.rows[node.state.filledIndex], len(self.rows))
-        new_state = copy.deepcopy(node.state)
         for row in rows:
+            new_state = copy.deepcopy(node.state)
             new_state.add_row(list(row))
             # as long as this newly added row doesn't violate any constraints
             if self.constraint_check(new_state.get_board()):
@@ -35,7 +34,7 @@ class Backtracking_Search(object):
                 result = self.recursive_backtracking(new_node)  # recurse
                 if result is not None:
                     return result
-            new_state.remove_row()
+                new_state.remove_row() # remove var from assignment 
         return None
 
     def must_have_rows(self, row_constraints):
@@ -99,9 +98,23 @@ class Backtracking_Search(object):
                     final_sol[i][j] = True
         return final_sol
 
+    def is_goal(self, state):
+        for j in range(0, self.col_length):
+            if self.nonogram.check_constraint_col(state, j) is not 0:
+                return False
+        return True
 
 main = Backtracking_Search()
-
+b = [['-', '#', '#', '-', '-', '-', '#', '#', '-'],
+['#', '#', '#', '#', '-', '#', '#', '#', '#'],
+['#', '#', '#', '#', '#', '#', '#', '#', '#'],
+['#', '#', '#', '#', '#', '#', '#', '#', '#'],
+['-', '#', '#', '#', '#', '#', '#', '#', '-'],
+['-', '-', '#', '#', '#', '#', '#', '-', '-'],
+['-', '-', '-', '#', '#', '#', '-', '-', '-'],
+['-', '#', '-', '-', '#', '-', '-', '-', '-'],
+['-', '-', '-', '-', '#', '-', '-', '-', '-']]
+#print 'isgoal: ', main.is_goal(b)
 goal_state = main.backtracking_search(main.state)
 for row in goal_state.state.get_board():
     print ' '.join(row)
