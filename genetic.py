@@ -81,7 +81,7 @@ class GeneticAlgorithm(object):
         # new mutated offspring
         new = []
         for i in range(0, ROW_COUNT):
-            # 10% chance a row get mutated
+            # 20% chance a row get mutated
             probability = random.randint(0, 100)
             if probability <= 20:
                 # print "row" + str(i) + " get mutated"
