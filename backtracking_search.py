@@ -36,10 +36,9 @@ class Backtracking_Search():
     def recursive_backtracking(self, node):
         # check for goal state
         if self.is_goal(copy.deepcopy(node.state.get_board())):
-            print 'GOAL: ', 
-            print node.depth 
-            print 'all created nodes: ', self.all_created_nodes
-            print 'all traversed: ', self.traversed
+            print 'Depth: ', node.depth 
+            print 'All created nodes: ', self.all_created_nodes
+            print 'All traversed: ', self.traversed
             return node
         # get all possible permutations for the row we're currently trying to fill
         rows = self.get_row_permutations(node.state.filledIndex)
@@ -199,15 +198,15 @@ class Backtracking_Search():
         return self.col_permutations[index]
 
 main = Backtracking_Search()
-b = [['-', '#', '#', '-', '-', '-', '#', '#', '-'],
-['#', '#', '#', '#', '-', '#', '#', '#', '#'],
-['#', '#', '#', '#', '#', '#', '#', '#', '#'],
-['#', '#', '#', '#', '#', '#', '#', '#', '#'],
-['-', '#', '#', '#', '#', '#', '#', '#', '-'],
-['-', '-', '#', '#', '#', '#', '#', '-', '-'],
-['-', '-', '-', '#', '#', '#', '-', '-', '-'],
-['-', '#', '-', '-', '#', '-', '-', '-', '-'],
-['-', '-', '-', '-', '#', '-', '-', '-', '-']]
+# b = [['-', '#', '#', '-', '-', '-', '#', '#', '-'],
+# ['#', '#', '#', '#', '-', '#', '#', '#', '#'],
+# ['#', '#', '#', '#', '#', '#', '#', '#', '#'],
+# ['#', '#', '#', '#', '#', '#', '#', '#', '#'],
+# ['-', '#', '#', '#', '#', '#', '#', '#', '-'],
+# ['-', '-', '#', '#', '#', '#', '#', '-', '-'],
+# ['-', '-', '-', '#', '#', '#', '-', '-', '-'],
+# ['-', '#', '-', '-', '#', '-', '-', '-', '-'],
+# ['-', '-', '-', '-', '#', '-', '-', '-', '-']]
 #print 'isgoal: ', main.is_goal(b)
 goal_state = main.backtracking_search(main.state)
 for row in goal_state.state.get_board():
