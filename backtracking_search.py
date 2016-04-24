@@ -2,7 +2,15 @@ from nonogram import Nonogram
 from state import State
 from node import Node
 import copy
+# HEART (10x10): 
+# depth:  9
+# all created nodes:  67
+# all traversed:  34
 
+# HOUSE 
+# depth:  10
+# all created nodes:  2110
+# all traversed:  757
 
 class Backtracking_Search():
 
@@ -12,7 +20,13 @@ class Backtracking_Search():
         self.col = self.nonogram.get_column_constraints()
         self.row_length = len(self.rows)
         self.col_length = len(self.col)
+        # define a state 
         self.state = State(self.rows, self.col)
+        # get permutations from nonogram.py
+        self.col_permutations = self.hash_col_permutations()
+        self.row_permutations = self.hash_row_permutations() 
+        self.traversed = 0 
+        self.all_created_nodes = 0 
 
     # pass in an initial state
     def backtracking_search(self, state):
@@ -22,14 +36,19 @@ class Backtracking_Search():
     def recursive_backtracking(self, node):
         # check for goal state
         if self.is_goal(copy.deepcopy(node.state.get_board())):
+            print 'Depth: ', node.depth 
+            print 'All created nodes: ', self.all_created_nodes
+            print 'All traversed: ', self.traversed
             return node
         # get all possible permutations for the row we're currently trying to fill
-        rows = self.nonogram.get_permutations(self.rows[node.state.filledIndex], len(self.rows))
+        rows = self.get_row_permutations(node.state.filledIndex)
         for row in rows:
             new_state = copy.deepcopy(node.state)
             new_state.add_row(list(row))
+            self.all_created_nodes += 1
             # as long as this newly added row doesn't violate any constraints
-            if self.constraint_check(new_state.get_board()):
+            if self.check_violations(new_state):
+                self.traversed += 1
                 new_node = Node(new_state, node, node.depth + 1)
                 result = self.recursive_backtracking(new_node)  # recurse
                 if result is not None:
@@ -49,6 +68,56 @@ class Backtracking_Search():
                         row_sol[i] = False
             solution.append(row_sol)
         return solution
+
+
+    def check_violations(self, state):
+        board = zip(*(state.get_board()))
+        for i in range(0, len(board)): 
+            if not self.check_col_violations(board[i], self.col[i]):
+                return False 
+        return True
+
+    def check_col_violations(self, col, constraints):
+        filled = 0 
+        all_filled = 0 
+
+        # check if there are too many '#' in the column; obviously a violation 
+        for c in col: 
+            if c == '#': 
+                filled += 1
+            if c != '?':
+                all_filled += 1 
+
+        if filled > sum(constraints):
+            return False 
+
+        counter = 0 # track block size
+        curr_constraint = 0 # tracks the index of the constraint
+        i = 0 
+        while i < all_filled: 
+            if curr_constraint == len(constraints): 
+                break 
+            if col[i] == '#': 
+                if constraints[curr_constraint] > (all_filled - i):
+                    return True 
+
+                counter = 1 
+                for j in range(i + 1, all_filled): 
+                    if col[j] != '#':
+                        break 
+                    counter += 1 
+                if counter != constraints[curr_constraint]: 
+                    return False 
+                curr_constraint += 1
+                i += counter 
+            else: 
+                i += 1 
+        return True 
+
+
+
+
+
 
     def must_have_cols(self, col_constraints):
         # call must_have_rows and transpose the rows to columns
@@ -99,21 +168,45 @@ class Backtracking_Search():
         return final_sol
 
     def is_goal(self, state):
-        for j in range(0, self.col_length):
-            if self.nonogram.check_constraint_col(state, j) is not 0:
+        new_state = zip(*(state))
+        for i in range(len(self.col_permutations)):
+            if ''.join(new_state[i]) not in self.col_permutations[i]: 
                 return False
-        return True
+        return True 
+
+
+    # Checks if something
+    def hash_col_permutations(self): 
+        # map index of column to a list of its constraints
+        col = dict()
+        for c in range(len(self.col)): 
+            col[c] = self.nonogram.get_permutations(self.col[c], self.row_length)
+        return col
+
+    def hash_row_permutations(self):
+        row = dict() 
+        for r in range(len(self.rows)): 
+            row[r] = self.nonogram.get_permutations(self.rows[r], self.col_length)
+        return row 
+   
+    # returns the list of possible permutations at row[index]
+    def get_row_permutations(self, index):
+        return self.row_permutations[index]
+
+    # returns the list of possible permutations at column[index]
+    def get_col_permutations(self, index):
+        return self.col_permutations[index]
 
 main = Backtracking_Search()
-b = [['-', '#', '#', '-', '-', '-', '#', '#', '-'],
-['#', '#', '#', '#', '-', '#', '#', '#', '#'],
-['#', '#', '#', '#', '#', '#', '#', '#', '#'],
-['#', '#', '#', '#', '#', '#', '#', '#', '#'],
-['-', '#', '#', '#', '#', '#', '#', '#', '-'],
-['-', '-', '#', '#', '#', '#', '#', '-', '-'],
-['-', '-', '-', '#', '#', '#', '-', '-', '-'],
-['-', '#', '-', '-', '#', '-', '-', '-', '-'],
-['-', '-', '-', '-', '#', '-', '-', '-', '-']]
+# b = [['-', '#', '#', '-', '-', '-', '#', '#', '-'],
+# ['#', '#', '#', '#', '-', '#', '#', '#', '#'],
+# ['#', '#', '#', '#', '#', '#', '#', '#', '#'],
+# ['#', '#', '#', '#', '#', '#', '#', '#', '#'],
+# ['-', '#', '#', '#', '#', '#', '#', '#', '-'],
+# ['-', '-', '#', '#', '#', '#', '#', '-', '-'],
+# ['-', '-', '-', '#', '#', '#', '-', '-', '-'],
+# ['-', '#', '-', '-', '#', '-', '-', '-', '-'],
+# ['-', '-', '-', '-', '#', '-', '-', '-', '-']]
 #print 'isgoal: ', main.is_goal(b)
 goal_state = main.backtracking_search(main.state)
 for row in goal_state.state.get_board():

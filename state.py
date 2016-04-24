@@ -26,3 +26,10 @@ class State(object):
 
         self.board[self.filledIndex - 1] = ["?"] * (self.row_length)
         self.filledIndex -= 1
+    
+    def to_string(self):
+        s = ""
+        for i in range(self.row_length):
+            s+=''.join(self.board[i])
+        return s
+
