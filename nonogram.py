@@ -15,9 +15,23 @@ class Nonogram(object):
     UNKNOWN = "?"
 
     # Constraints for rows and columns
-    ROWS = [[2, 2], [4, 4], [9], [9], [7], [5], [3], [1], [1]]
+    # Heart
+    # ROWS = [[2, 2], [4, 4], [9], [9], [7], [5], [3], [1], [1]]
+    # COLUMNS = [[3], [5], [6], [6], [7], [6], [6], [5], [3]]
 
-    COLUMNS = [[3], [5], [6], [6], [7], [6], [6], [5], [3]]
+    # Duck
+    # ROWS = [[3], [5], [4, 3], [7], [5], [3], [5], [1, 8], [3, 3, 3], [7, 3, 2], [5, 4, 2], [8, 2], [10], [2, 3],[6]]
+    # COLUMNS = [[3],[4],[5],[4],[5],[6],[3, 2, 1],[2, 2, 5],[4, 2, 6],[8, 2, 3],[8, 2, 1, 1],[2, 6, 2, 1], [4, 6],[2, 4],[1]]
+
+    # HOUSE
+    # ROWS = [[2, 1], [5], [6], [8], [10], [1, 1], [1, 2, 1, 1], [1, 2, 1, 1], [1, 2, 1], [8]]
+    # COLUMNS = [[1], [7], [3, 1], [4, 4], [5, 4], [5, 1], [4, 2, 1], [5, 1], [7], [1]]
+
+    # ELEPHANT
+    # ROWS = [[3], [4, 2], [6, 6], [1, 4, 2, 1], [6, 3, 2], [6, 7], [6, 8], [1, 10], [1, 10], [1, 10], [1, 1, 4, 4],
+    #         [3, 4, 4], [4, 4], [4, 4], [4, 4]]
+    # COLUMNS = [[1], [10], [2, 3, 1], [6, 2], [6], [15], [1, 4, 8], [2, 9], [14], [8], [1, 6], [1, 10], [1, 10], [1, 11],
+    #            [12]]
 
     ROW_COUNT = len(ROWS)
     COLUMN_COUNT = len(COLUMNS)
@@ -153,8 +167,11 @@ class Nonogram(object):
 
     # list of rows/cols
     def print_state(self, state):
+        string = ""
         for row in state:
-            print row
+            string += str(row)
+            string += "\n"
+        return string
 
     # orients each array vertically (like columns in the board)
     def row_to_col(self, game_board):
@@ -188,19 +205,20 @@ class Nonogram(object):
         state = self.get_random_state(ROWS, COLUMNS)
 
         col_sol = self.string_to_list(self.row_to_col(state[1]))
-        self.print_state(state[0])  # print solution generated based on row constraints only
+        print(self.print_state(state[0]))  # print solution generated based on row constraints only
         # check constraints each column
         counter = self.check_all_col(state[0])
 
         print "Number of col constraints violated: ", counter
 
         counter = 0
-        self.print_state(self.row_to_col(state[1]))  # print solution generated based on column constraints only
+        print(self.print_state(self.row_to_col(state[1])))  # print solution generated based on column constraints only
         for row in range(0, ROW_COUNT):
             counter += self.check_constraint_row(col_sol, row)
 
         print "Number of row constraints violated: ", counter
         print "RANDOM ROW: ", self.get_random_row(0)
+
 
 stuff = Nonogram()
 # stuff.test()

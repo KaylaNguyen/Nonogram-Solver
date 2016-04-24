@@ -5,12 +5,14 @@ By Kayla Nguyen
 """
 from nonogram import Nonogram
 from solution import Solution
-import random, operator
+import random, operator, time
 
 
 class GeneticAlgorithm(object):
+    global file
+    file = open('output.txt', 'w')
     # instance of nonogram board
-    global nonogram, population, fitness, ROWS, COLUMNS, ROW_COUNT, COLUMN_COUNT
+    global nonogram, population, fitness, ROWS, COLUMNS, ROW_COUNT, COLUMN_COUNT, POPSIZE, PROBABILITY
     nonogram = Nonogram()
     population = []
     fitness = []
@@ -20,10 +22,13 @@ class GeneticAlgorithm(object):
     ROW_COUNT = len(ROWS)
     COLUMN_COUNT = len(COLUMNS)
 
+    POPSIZE = 100
+    PROBABILITY = 20
+
     # generate random population of suitable solutions for nonogram
     def generate_population(self):
         pop = []
-        for i in range(0, 20):
+        for i in range(0, POPSIZE):
             state = nonogram.get_random_state(ROWS, COLUMNS)
             # get solution generated based on row constraints
             pop.append(state[0])
@@ -43,12 +48,19 @@ class GeneticAlgorithm(object):
         pop = []
         # create a new population by repeating
         # selection, crossover, mutation, accepting (placing new offspring in new pop)
-        while len(pop) <= 20:
+        while len(pop) <= POPSIZE:
             parents = self.selection(pairs)
             cross = self.crossover(parents)
             offspring = self.mutation(cross)
             # place new offspring in a new population
             pop.append(offspring)
+        '''WRITING TO FILE'''
+        # file.write("PARENTS ARE\n")
+        # file.write(nonogram.print_state(parents[0]))
+        # file.write("\n")
+        # file.write(nonogram.print_state(parents[1]))
+        # file.write("\n")
+
         # return new generated population
         return pop
 
@@ -83,7 +95,7 @@ class GeneticAlgorithm(object):
         for i in range(0, ROW_COUNT):
             # 20% chance a row get mutated
             probability = random.randint(0, 100)
-            if probability <= 20:
+            if probability <= PROBABILITY:
                 # print "row" + str(i) + " get mutated"
                 # print offspring[i]
                 rand = nonogram.get_random_row(i)
@@ -112,13 +124,19 @@ class GeneticAlgorithm(object):
 
     # main method
     def __init__(self):
+        start = time.time()
+
         global population, fitness
         # STEP 1: generate random population
         population = self.generate_population()
 
         # loop to return the best solution in current population
         flag = None
+        counter = 0
         while flag is None:
+            counter += 1
+            string = "Generation " + str(counter) + "\n"
+            file.write(string)
             # STEP 2: evaluate fitness of each sol in population
             fitness = self.evaluate_fitness(population)
 
@@ -130,8 +148,24 @@ class GeneticAlgorithm(object):
 
             # STEP 4: check if the end condition is satisfied
             flag = self.check_goal(population)
+        end = time.time()
+        runtime = end - start
+        '''WRITING TO FILE'''
+        # file.write("SOLUTION IS \n")
+        # file.write(nonogram.print_state(flag))
+        # file.write("\n")
+        # file.write("\nRUNTIME IS")
+        # file.write(str(runtime))
+        print "RUNTIME IS %s" %runtime
+        print "Number of generations: %s" % counter
+        print (nonogram.print_state(flag))
 
-        print nonogram.print_state(flag)
-
+'''
+in selection
+    choose 2 best sol into next gen
+    then choose the rest by randomly choosing the sol with highest prob
+    using roulette wheel
+then crossover next gen
+'''
 
 GeneticAlgorithm()
