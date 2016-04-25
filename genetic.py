@@ -57,7 +57,7 @@ class GeneticAlgorithm(object):
             # place new offspring in a new population
             pop.append(offspring)
 
-        print ("BEST 2 ARE\n")
+        print ("PARENTS ARE\n")
         print nonogram.print_state(parents[0])
         print("\n\n")
         print nonogram.print_state(parents[1])
@@ -93,19 +93,19 @@ class GeneticAlgorithm(object):
             post_pop.append(offspring)
 
         '''WRITING TO FILE'''
-        file.write("BEST 2 ARE\n")
-        file.write(nonogram.print_state(chosen[0].get_state()))
-        file.write(str(chosen[0].get_fit()))
-        file.write("\n\n")
-        file.write(nonogram.print_state(chosen[1].get_state()))
-        file.write(str(chosen[1].get_fit()))
-        file.write("\n\n")
+        # file.write("BEST 2 ARE\n")
+        # file.write(nonogram.print_state(chosen[0].get_state()))
+        # file.write(str(chosen[0].get_fit()))
+        # file.write("\n\n")
+        # file.write(nonogram.print_state(chosen[1].get_state()))
+        # file.write(str(chosen[1].get_fit()))
+        # file.write("\n\n")
 
         print ("BEST 2 ARE\n")
-        nonogram.print_state(chosen[0].get_state())
+        print nonogram.print_state(chosen[0].get_state())
         print str(chosen[0].get_fit())
         print("\n\n")
-        nonogram.print_state(chosen[1].get_state())
+        print nonogram.print_state(chosen[1].get_state())
         print(str(chosen[1].get_fit()))
         print("\n\n")
 
