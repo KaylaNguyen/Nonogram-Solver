@@ -22,7 +22,7 @@ class GeneticAlgorithm(object):
     ROW_COUNT = len(ROWS)
     COLUMN_COUNT = len(COLUMNS)
 
-    POPSIZE = 20
+    POPSIZE = 100
     MUTATIONPROB = 20
     CROSSOVERPROB = 75
 
@@ -50,18 +50,12 @@ class GeneticAlgorithm(object):
         pop = []
         # create a new population by repeating
         # selection, crossover, mutation, accepting (placing new offspring in new pop)
+        parents = self.selection(pairs)
         while len(pop) <= POPSIZE:
-            parents = self.selection(pairs)
             cross = self.crossover(parents)
             offspring = self.mutation(cross)
             # place new offspring in a new population
             pop.append(offspring)
-        '''WRITING TO FILE'''
-        # file.write("PARENTS ARE\n")
-        # file.write(nonogram.print_state(parents[0]))
-        # file.write("\n")
-        # file.write(nonogram.print_state(parents[1]))
-        # file.write("\n")
 
         # return new generated population
         return pop
@@ -91,21 +85,37 @@ class GeneticAlgorithm(object):
             offspring = self.mutation(pre_pop[i])
             # place new offspring in a new population
             post_pop.append(offspring)
+
+        '''WRITING TO FILE'''
+        file.write("BEST 2 ARE\n")
+        file.write(nonogram.print_state(chosen[0].get_state()))
+        file.write(str(chosen[0].get_fit()))
+        file.write("\n\n")
+        file.write(nonogram.print_state(chosen[1].get_state()))
+        file.write(str(chosen[1].get_fit()))
+        file.write("\n\n")
+
         # return new generated population
         return post_pop
 
     # use roulette wheel to select best solutions from a population according to their fitness
     # the better fitness, the bigger chance to be selected
     def selection_2(self, pairs):
+        # TODO: smallest fitness supposed to get the biggest piece
         sum_fit = 0
+        # store fitness in an array
+        fit_array = []
         for i in pairs:
             sum_fit += i.get_fit()
+            fit_array.append(i.get_fit())
         # print "sum fit is", sum_fit
+        fit_array.reverse()
+
         chosen = []
         fitness_function = []
         index = 0
-        for j in pairs:
-            fit_val = j.get_fit()
+        for j in fit_array:
+            fit_val = j
             # print "fit val is", fit_val
             fitness_function.append(range(index, index + fit_val))
             index += fit_val
@@ -161,6 +171,15 @@ class GeneticAlgorithm(object):
         sorted_pairs = sorted(pairs, key=operator.attrgetter('fitness'))
         sol1 = sorted_pairs[0]
         sol2 = sorted_pairs[1]
+
+        '''WRITING TO FILE'''
+        file.write("PARENTS ARE\n")
+        file.write(nonogram.print_state(sol1.get_state()))
+        file.write(str(sol1.get_fit()))
+        file.write("\n")
+        file.write(nonogram.print_state(sol2.get_state()))
+        file.write(str(sol2.get_fit()))
+        file.write("\n")
 
         # list of 2 chosen solutions
         chosen = [sol1.get_state(), sol2.get_state()]
@@ -235,7 +254,7 @@ class GeneticAlgorithm(object):
             pairs = self.pair_up(population, fitness)
 
             # STEP 3: create a new population
-            population = self.create_new_population_2(pairs)
+            population = self.create_new_population_1(pairs)
 
             # STEP 4: check if the end condition is satisfied
             flag = self.check_goal(population)
@@ -250,13 +269,5 @@ class GeneticAlgorithm(object):
         print "RUNTIME IS %s" %runtime
         print "Number of generations: %s" % counter
         print (nonogram.print_state(flag))
-
-'''
-in selection
-    roulette wheel from 20 with highest prob into another 20
-    choose 2 best sol into next gen
-then crossover 18 left
-mutate the whole 20
-'''
 
 GeneticAlgorithm()
