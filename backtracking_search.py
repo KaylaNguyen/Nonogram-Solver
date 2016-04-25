@@ -2,6 +2,7 @@ from nonogram import Nonogram
 from state import State
 from node import Node
 import copy
+from time import sleep 
 # HEART (10x10): 
 # depth:  9
 # all created nodes:  67
@@ -36,9 +37,9 @@ class Backtracking_Search():
     def recursive_backtracking(self, node):
         # check for goal state
         if self.is_goal(copy.deepcopy(node.state.get_board())):
-        #    print 'Depth: ', node.depth 
-        #    print 'All created nodes: ', self.all_created_nodes
-        #    print 'All traversed: ', self.traversed
+            print 'Depth: ', node.depth 
+            print 'All created nodes: ', self.all_created_nodes
+            print 'All traversed: ', self.traversed
         #    print 'Parent Node: ', node.parent.state.print_board()
             return node
         # get al possible permutations for the row we're currently trying to fill
@@ -50,6 +51,7 @@ class Backtracking_Search():
             # as long as this newly added row doesn't violate any constraints
             #print 'constraint: ', self.check_violations(new_state)
             if self.check_violations(new_state):
+                sleep(0.01)
                 self.traversed += 1
                 print 'new state '
                 print new_state.to_string()
