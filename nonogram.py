@@ -10,44 +10,46 @@ from itertools import izip_longest
 class Nonogram(object):
     # Define some character constants
     global BLANK, FILL, UNKNOWN, ROWS, COLUMNS, COLUMN_COUNT, ROW_COUNT, board
-    BLANK = "-"
+    BLANK = " "
     FILL = "#"
     UNKNOWN = "?"
 
-#### EXAMPLES
+    #### EXAMPLES
 
-#    HEART (9x9)
-#    ROWS = [[2, 2], [4, 4], [9], [9], [7], [5], [3], [1], [1]]
-#    COLUMNS = [[3], [5], [6], [6], [7], [6], [6], [5], [3]]
+    #    HEART (9x9)
+    #    ROWS = [[2, 2], [4, 4], [9], [9], [7], [5], [3], [1], [1]]
+    #    COLUMNS = [[3], [5], [6], [6], [7], [6], [6], [5], [3]]
 
-#    ELEPHANT (15x15)
-    ROWS = [[3], [4, 2], [6, 6], [1, 4, 2, 1], [6, 3, 2], [6, 7], [6, 8], [1, 10], [1, 10], [1, 10], [1, 1, 4, 4], [3, 4, 4], [4, 4], [4, 4], [4, 4]]
-    COLUMNS = [[1], [10], [2, 3, 1], [6, 2], [6], [15], [1, 4, 8], [2, 9], [14], [8], [1, 6], [1, 10], [1, 10], [1, 11], [12]]
-#   Duck
-#   ROWS = [[3], [5], [4, 3], [7], [5], [3], [5], [1, 8], [3, 3, 3], [7, 3, 2], [5, 4, 2], [8, 2], [10], [2, 3],[6]]
-#   COLUMNS = [[3],[4],[5],[4],[5],[6],[3, 2, 1],[2, 2, 5],[4, 2, 6],[8, 2, 3],[8, 2, 1, 1],[2, 6, 2, 1], [4, 6],[2, 4],[1]]
+    #    ELEPHANT (15x15)
+    #     ROWS = [[3], [4, 2], [6, 6], [1, 4, 2, 1], [6, 3, 2], [6, 7], [6, 8], [1, 10], [1, 10], [1, 10], [1, 1, 4, 4], [3, 4, 4], [4, 4], [4, 4], [4, 4]]
+    #     COLUMNS = [[1], [10], [2, 3, 1], [6, 2], [6], [15], [1, 4, 8], [2, 9], [14], [8], [1, 6], [1, 10], [1, 10], [1, 11], [12]]
+    #   Duck
+    ROWS = [[3], [5], [4, 3], [7], [5], [3], [5], [1, 8], [3, 3, 3], [7, 3, 2], [5, 4, 2], [8, 2], [10], [2, 3], [6]]
+    COLUMNS = [[3], [4], [5], [4], [5], [6], [3, 2, 1], [2, 2, 5], [4, 2, 6], [8, 2, 3], [8, 2, 1, 1], [2, 6, 2, 1],
+               [4, 6], [2, 4], [1]]
 
-#    HOUSE (10x10)
-#    ROWS = [[2, 1], [5], [6], [8], [10], [1, 1], [1, 2, 1, 1], [1, 2, 1, 1], [1, 2, 1], [8]]
-#    COLUMNS = [[1], [7], [3, 1], [4, 4], [5, 4], [5, 1], [4, 2, 1], [5, 1], [7], [1]]
+    #    HOUSE (10x10)
+    #    ROWS = [[2, 1], [5], [6], [8], [10], [1, 1], [1, 2, 1, 1], [1, 2, 1, 1], [1, 2, 1], [8]]
+    #    COLUMNS = [[1], [7], [3, 1], [4, 4], [5, 4], [5, 1], [4, 2, 1], [5, 1], [7], [1]]
 
-#    Weird random shape (15x15)
-#    ROWS = [[2, 7, 2], [3, 4, 4], [3, 1, 5], [2, 1, 1, 3], [2, 1, 1, 2], [2, 1, 2], [2, 6], [5, 8], [4, 8], [11, 1, 1], [1, 8], [2, 1, 1, 5, 1], [1, 8, 3], [1, 5, 2], [1, 1, 2]]
-#    COLUMNS = [[6, 1, 1, 4], [10, 1], [2, 5, 1], [3, 2], [1, 3, 1], [2, 5], [4, 4, 3], [2, 7], [5, 8], [1, 1, 9], [3, 1, 6], [3, 3, 2], [11, 1], [2, 6 ,3], [1, 4]]
+    #    Weird random shape (15x15)
+    #    ROWS = [[2, 7, 2], [3, 4, 4], [3, 1, 5], [2, 1, 1, 3], [2, 1, 1, 2], [2, 1, 2], [2, 6], [5, 8], [4, 8], [11, 1, 1], [1, 8], [2, 1, 1, 5, 1], [1, 8, 3], [1, 5, 2], [1, 1, 2]]
+    #    COLUMNS = [[6, 1, 1, 4], [10, 1], [2, 5, 1], [3, 2], [1, 3, 1], [2, 5], [4, 4, 3], [2, 7], [5, 8], [1, 1, 9], [3, 1, 6], [3, 3, 2], [11, 1], [2, 6 ,3], [1, 4]]
 
-#    weird random shape #2 
-#    ROWS = [[2], [1, 2], [1, 1], [2], [1], [3], [3], [2, 2], [2, 1], [2, 2, 1], [2, 3], [2, 2]]
-#    COLUMNS = [[2, 1], [1, 3], [2, 4], [3, 4], [4], [3], [3], [3], [2], [2]]
+    #    weird random shape #2
+    #    ROWS = [[2], [1, 2], [1, 1], [2], [1], [3], [3], [2, 2], [2, 1], [2, 2, 1], [2, 3], [2, 2]]
+    #    COLUMNS = [[2, 1], [1, 3], [2, 4], [3, 4], [4], [3], [3], [3], [2], [2]]
 
-#    Hen 
-#    ROWS = [[3],[2,1],[3,2],[2,2],[6],[1,5],[6],[1],[2]]
-#    COLUMNS = [[1,2],[3,1],[1,5],[7,1],[5],[3],[4],[3]]
+    #    Hen
+    #    ROWS = [[3],[2,1],[3,2],[2,2],[6],[1,5],[6],[1],[2]]
+    #    COLUMNS = [[1,2],[3,1],[1,5],[7,1],[5],[3],[4],[3]]
 
 
     ROW_COUNT = len(ROWS)
     COLUMN_COUNT = len(COLUMNS)
     # initialize board
     board = [[UNKNOWN for x in range(COLUMN_COUNT)] for y in range(ROW_COUNT)]
+
 
     # generate random solution for each constraint
     # returns a tuple in the form (row_solution, col_solution)
@@ -69,6 +71,7 @@ class Nonogram(object):
             col_sol.append(random.choice(sol))  # append a random permutation
 
         return row_sol, col_sol
+
 
     # gets all possible permutations in a row given the constraints
     # returns a list of all possible permutations
@@ -95,14 +98,17 @@ class Nonogram(object):
                 perms.append(prev + blocks + BLANK + p)
         return perms
 
+
     # return a random row that meets the constraints
     def get_random_row(self, row_num):
         return random.choice(self.get_permutations(ROWS[row_num], ROW_COUNT))
+
 
     # check constrains for given row (board[row])
     def check_constraint_row(self, state, row):
         current_row = state[row]
         return self.check_constraint(ROWS, row, current_row)
+
 
     # check constrains for given column
     def check_constraint_col(self, state, column):
@@ -110,6 +116,7 @@ class Nonogram(object):
         for x in range(0, ROW_COUNT):
             current_col.append(state[x][column])
         return self.check_constraint(COLUMNS, column, current_col)
+
 
     # return number of constraint violated, order matters
     # if there's more filled square in row than expected, each filled square is one violation
@@ -155,9 +162,11 @@ class Nonogram(object):
         # print violate
         return violate
 
+
     def print_board(self):
         for r in board:
             print ' '.join(r)
+
 
     # Return true if there's no constraint violation in the solution
     def goal_check(self, solution):
@@ -169,12 +178,14 @@ class Nonogram(object):
                 return False
         return True
 
+
     # Return true if there's no constraint violation in the solution
     def check_all_col(self, solution):
         num = 0
         for j in range(0, COLUMN_COUNT):
             num += self.check_constraint_col(solution, j)
         return num
+
 
     # list of rows/cols
     def print_state(self, state):
@@ -184,6 +195,7 @@ class Nonogram(object):
             string += "\n"
         return string
 
+
     # orients each array vertically (like columns in the board)
     def row_to_col(self, game_board):
         col = []
@@ -191,18 +203,22 @@ class Nonogram(object):
             col.append(''.join(x))
         return col
 
+
     def string_to_list(self, board):
         game = []
         for b in board:
             game.append(b.split())
         return game
 
+
     # getter methods
     def get_row_constraints(self):
         return ROWS
 
+
     def get_column_constraints(self):
         return COLUMNS
+
 
     def test(self):
         self.print_board()
