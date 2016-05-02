@@ -5,7 +5,7 @@ By Kayla Nguyen
 """
 from nonogram import Nonogram
 from solution import Solution
-import random, operator, time
+import random, operator, time, sys
 
 
 class GeneticAlgorithm(object):
@@ -23,7 +23,7 @@ class GeneticAlgorithm(object):
     COLUMN_COUNT = len(COLUMNS)
 
     POPSIZE = 100
-    MUTATIONPROB = 20
+    MUTATIONPROB = None
     CROSSOVERPROB = 75
 
     # generate random population of suitable solutions for nonogram
@@ -92,7 +92,7 @@ class GeneticAlgorithm(object):
             # place new offspring in a new population
             post_pop.append(offspring)
 
-        '''WRITING TO FILE'''
+        # '''WRITING TO FILE'''
         # file.write("BEST 2 ARE\n")
         # file.write(nonogram.print_state(chosen[0].get_state()))
         # file.write(str(chosen[0].get_fit()))
@@ -115,7 +115,6 @@ class GeneticAlgorithm(object):
     # use roulette wheel to select best solutions from a population according to their fitness
     # the better fitness, the bigger chance to be selected
     def selection_2(self, pairs):
-        # TODO: smallest fitness supposed to get the biggest piece
         sum_fit = 0
         # store fitness in an array
         fit_array = []
@@ -179,6 +178,7 @@ class GeneticAlgorithm(object):
             index_j += 2
         return list
 
+    '''1ST APPROACH'''
     # select 2 solutions from a population according to their fitness
     # the better fitness, the bigger chance to be selected
     def selection(self, pairs):
@@ -186,14 +186,14 @@ class GeneticAlgorithm(object):
         sol1 = sorted_pairs[0]
         sol2 = sorted_pairs[1]
 
-        '''WRITING TO FILE'''
-        file.write("PARENTS ARE\n")
-        file.write(nonogram.print_state(sol1.get_state()))
-        file.write(str(sol1.get_fit()))
-        file.write("\n")
-        file.write(nonogram.print_state(sol2.get_state()))
-        file.write(str(sol2.get_fit()))
-        file.write("\n")
+        # '''WRITING TO FILE'''
+        # file.write("PARENTS ARE\n")
+        # file.write(nonogram.print_state(sol1.get_state()))
+        # file.write(str(sol1.get_fit()))
+        # file.write("\n")
+        # file.write(nonogram.print_state(sol2.get_state()))
+        # file.write(str(sol2.get_fit()))
+        # file.write("\n")
 
         # list of 2 chosen solutions
         chosen = [sol1.get_state(), sol2.get_state()]
@@ -201,15 +201,20 @@ class GeneticAlgorithm(object):
 
     # with a crossover probability cross over the parents to form a new offspring
     def crossover(self, parents):
-        # generate a random crossover point
-        crossover_point = random.randint(0, ROW_COUNT)
+        # generate a random probability
+        probability = random.randint(0, 100)
+        if probability < CROSSOVERPROB:
+            # generate a random crossover point
+            crossover_point = random.randint(0, ROW_COUNT)
 
-        # copy everything before this point from parent 1 and after this point from parent 2
-        offspring = []
-        for i in range(0, crossover_point):
-            offspring.append(parents[0][i])
-        for j in range(crossover_point, ROW_COUNT):
-            offspring.append(parents[1][j])
+            # copy everything before this point from parent 1 and after this point from parent 2
+            offspring = []
+            for i in range(0, crossover_point):
+                offspring.append(parents[0][i])
+            for j in range(crossover_point, ROW_COUNT):
+                offspring.append(parents[1][j])
+        else:
+            offspring = parents[0]
         return offspring
 
     # with a mutation probability mutate new offspring at each locus (position in chromosome)
@@ -248,6 +253,19 @@ class GeneticAlgorithm(object):
 
     # main method
     def __init__(self):
+        if len(sys.argv) == 1:
+            print "Choose an approach: greedy or proper"
+            print "'python genetic.py greedy' or 'python genetic.py proper'"
+            return
+
+        if str(sys.argv[1]) == "greedy":
+            global MUTATIONPROB
+            MUTATIONPROB = 20
+
+        elif str(sys.argv[1]) == "proper":
+            global MUTATIONPROB
+            MUTATIONPROB = 5
+
         start = time.time()
 
         global population, fitness
@@ -268,7 +286,11 @@ class GeneticAlgorithm(object):
             pairs = self.pair_up(population, fitness)
 
             # STEP 3: create a new population
-            population = self.create_new_population_1(pairs)
+
+            if str(sys.argv[1]) == "greedy":
+                population = self.create_new_population_1(pairs)
+            elif str(sys.argv[1]) == "proper":
+                population = self.create_new_population_2(pairs)
 
             # STEP 4: check if the end condition is satisfied
             flag = self.check_goal(population)
