@@ -22,7 +22,7 @@ class GeneticAlgorithm(object):
     ROW_COUNT = len(ROWS)
     COLUMN_COUNT = len(COLUMNS)
 
-    POPSIZE = 100
+    POPSIZE = 300
     MUTATIONPROB = None
     CROSSOVERPROB = 75
 
@@ -260,7 +260,7 @@ class GeneticAlgorithm(object):
 
         if str(sys.argv[1]) == "greedy":
             global MUTATIONPROB
-            MUTATIONPROB = 20
+            MUTATIONPROB = 30
 
         elif str(sys.argv[1]) == "proper":
             global MUTATIONPROB
