@@ -278,7 +278,7 @@ class GeneticAlgorithm(object):
         while flag is None:
             counter += 1
             string = "Generation " + str(counter) + "\n"
-            file.write(string)
+            # file.write(string)
             # STEP 2: evaluate fitness of each sol in population
             fitness = self.evaluate_fitness(population)
 
