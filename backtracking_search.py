@@ -53,7 +53,6 @@ class Backtracking_Search():
                 new_state.remove_row() # remove var from assignment 
         return None
 
-
     # Check constraint violation (2nd/successful attempt)
     def check_violations(self, state):
         if(state.filledIndex == len(state.get_board())): 
@@ -129,6 +128,7 @@ class Backtracking_Search():
                         row_sol[i] = False
             solution.append(row_sol)
         return solution
+
     # attempt 1 (unc)
     def constraint_check(self, board):
         solution = self.must_have_cols(self.col)
@@ -173,7 +173,6 @@ class Backtracking_Search():
                     # if both are true
                     final_sol[i][j] = True
         return final_sol
-
 
     def hash_col_permutations(self): 
         # map index of column to a list of its constraints
